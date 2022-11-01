@@ -81,7 +81,7 @@ const displayOnPage = (obj) => {
 const pageReload = () => {
   //getting all the userData from crudcrud
   axios
-    .get("https://crudcrud.com/api/f1717306c5b1469b9bcb3947a8cea855/userData")
+    .get(`https://crudcrud.com/api/944aa208bf8b457781c1843894e0e284/userData`)
     .then((res) => {
       res.data.forEach((user) => displayOnPage(user));
     })
@@ -99,6 +99,7 @@ const onsubmit = (e) => {
       msg.style.display = "none";
     }, 2000);
   } else {
+    //checking if email is already used
     const ul = document.querySelector(".unordered-list");
     Array.from(ul.children).forEach((li) => {
       let userDetails = li.childNodes[0].textContent;
