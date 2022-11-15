@@ -39,6 +39,7 @@ const displayOnPage = (obj) => {
     } else if (e.target.className == "edit") {
       const name = document.querySelector("#userName");
       const email = document.querySelector("#email");
+      const phone = document.querySelector("#phone");
       const userDetails = e.target.parentElement.childNodes[0].textContent;
       //axios call to edit-->getuser-->and then put the userdetail in input box and delete it
       axios
@@ -56,6 +57,7 @@ const displayOnPage = (obj) => {
                 .then((res) => {
                   name.value = user.name;
                   email.value = user.email;
+                  phone.value = user.value;
                   e.target.parentElement.remove();
                   console.log("deleted user");
                 })
@@ -72,7 +74,9 @@ const displayOnPage = (obj) => {
   });
 
   li.className = "list";
-  li.appendChild(document.createTextNode(`${obj.name} : ${obj.email}`));
+  li.appendChild(
+    document.createTextNode(`${obj.name} : ${obj.email} : ${obj.phone}`)
+  );
   li.appendChild(btnDel);
   li.appendChild(btnEdit);
   ul.insertAdjacentElement("beforeend", li);
@@ -92,64 +96,59 @@ const onsubmit = (e) => {
   e.preventDefault();
   const name = document.querySelector("#userName");
   const email = document.querySelector("#email");
-  if (name.value == "" || email.value == "") {
-    const msg = document.querySelector(".msg");
-    msg.style.display = "block";
-    setTimeout(() => {
-      msg.style.display = "none";
-    }, 2000);
-  } else {
-    //checking if email is already used
-    const ul = document.querySelector(".unordered-list");
-    Array.from(ul.children).forEach((li) => {
-      let userDetails = li.childNodes[0].textContent;
-      if (userDetails.indexOf(email.value) != -1) {
-        axios
-          .get(
-            `https://crudcrud.com/api/944aa208bf8b457781c1843894e0e284/userData`
-          )
-          .then((res) => {
-            const userDataAll = res.data;
-            userDataAll.forEach((user) => {
-              if (userDetails.indexOf(user.email) != -1) {
-                axios
-                  .delete(
-                    `https://crudcrud.com/api/944aa208bf8b457781c1843894e0e284/userData/${user._id}`
-                  )
-                  .then((res) => {
-                    li.remove();
-                    console.log("user deleted");
-                  })
-                  .catch((err) => {
-                    console.error(err);
-                  });
-              }
-            });
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-        li.remove();
-      }
-    });
-    const user = { name: name.value, email: email.value };
-    //storing in axios
-    axios
-      .post(
-        `https://crudcrud.com/api/944aa208bf8b457781c1843894e0e284/userData`,
-        user
-      )
-      .then((res) => {
-        console.log("user details posted");
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-    name.value = "";
-    email.value = "";
+  const phone = document.querySelector("#phone");
 
-    displayOnPage(user);
-  }
+  //checking if email is already used
+  const ul = document.querySelector(".unordered-list");
+  Array.from(ul.children).forEach((li) => {
+    let userDetails = li.childNodes[0].textContent;
+    if (userDetails.indexOf(email.value) != -1) {
+      axios
+        .get(
+          `https://crudcrud.com/api/944aa208bf8b457781c1843894e0e284/userData`
+        )
+        .then((res) => {
+          const userDataAll = res.data;
+          userDataAll.forEach((user) => {
+            if (userDetails.indexOf(user.email) != -1) {
+              axios
+                .delete(
+                  `https://crudcrud.com/api/944aa208bf8b457781c1843894e0e284/userData/${user._id}`
+                )
+                .then((res) => {
+                  li.remove();
+                  console.log("user deleted");
+                })
+                .catch((err) => {
+                  console.error(err);
+                });
+            }
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      li.remove();
+    }
+  });
+  const user = { name: name.value, email: email.value, phone: phone.value };
+  //storing in axios
+  axios
+    .post(
+      `https://crudcrud.com/api/944aa208bf8b457781c1843894e0e284/userData`,
+      user
+    )
+    .then((res) => {
+      console.log("user details posted");
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+  name.value = "";
+  email.value = "";
+  phone.value = "";
+
+  displayOnPage(user);
 };
 
 document.addEventListener("DOMContentLoaded", pageReload); //DOMContentLoaded is fired when page is reloded
