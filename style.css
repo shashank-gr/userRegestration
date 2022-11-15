@@ -70,4 +70,5 @@ li {
   padding: 5px 10px;
   float: right;
   border: none;
+  border-radius: 3px;
 }
